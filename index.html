@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Manipule les capteurs et suis pas à pas les corrections des logigrammes de technologie, en classe de 4e."><title>LogiLab · Série 2</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23122239'/%3E%3Cpath d='M32 9L50 26 32 43 14 26Z' fill='%2324b7df'/%3E%3Cpath d='M32 43v11' stroke='white' stroke-width='5'/%3E%3C/svg%3E"><style>:root{--ink:#172b3a;--muted:#465b6a;--blue:#0877ab;--cyan:#24b7df;--blue-soft:#eaf6fc;--line:#cbd9e2;--active:#ffde79;--active-line:#9b6500;--shadow:2px 3px 0 #172b3a}
+*{box-sizing:border-box}body{margin:0;background:#f4f7fa;color:var(--ink);font:17px/1.55 'Segoe UI',Arial,sans-serif}h1,h2,h3,p{margin-top:0}h1,h2,h3,button,.brand{font-family:'Trebuchet MS','Arial Rounded MT Bold',Arial,sans-serif}h1{font-size:34px;letter-spacing:-.6px;line-height:1.15;margin:6px 0 10px}h2{font-size:20px;line-height:1.3;margin:0}h3{font-size:21px;line-height:1.3;margin:6px 0}p{margin-bottom:14px}a{color:#006596}button,input,select{font:inherit}button{font-family:'Trebuchet MS',Arial,sans-serif;font-weight:800;border:2px solid var(--ink);border-radius:12px;background:#fff;color:var(--ink);min-height:42px;padding:9px 14px;box-shadow:var(--shadow);cursor:pointer;transition:transform .12s,box-shadow .12s,background .12s}button:hover:not(:disabled){background:#eaf6fc;transform:translateY(-1px);box-shadow:3px 4px 0 var(--ink)}button:active:not(:disabled){transform:translate(1px,2px);box-shadow:1px 1px 0 var(--ink)}button:disabled{opacity:.45;cursor:default;box-shadow:none}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:4px solid var(--blue);outline-offset:4px}button,input,select,a{touch-action:manipulation}[hidden]{display:none!important}.primary{background:var(--cyan)}button.primary:hover:not(:disabled){background:#56ccec}.text-button{min-height:36px;padding:5px 0;border:0;border-radius:0;box-shadow:none;color:#006596;text-decoration:underline;text-underline-offset:4px;font-size:14px}.text-button:hover:not(:disabled){box-shadow:none;transform:none;background:transparent;color:#173b52}
+.topbar{display:flex;align-items:center;gap:24px;padding:17px max(24px,calc((100vw - 1500px)/2));background:white;border-bottom:3px solid var(--cyan)}.brand{display:flex;align-items:center;color:var(--ink);text-decoration:none;font-size:28px;font-weight:850;letter-spacing:-.8px}.brand>span:last-child{color:var(--blue)}.brandmark{color:var(--blue);font-size:39px;line-height:1;margin-right:10px}.header-label{font-size:16px;color:var(--muted)}.series-tag{margin-left:auto;white-space:nowrap;border-radius:7px;color:#075c85;background:var(--blue-soft);padding:5px 11px;font-weight:750;font-size:15px}.help-button{font-size:14px;min-height:39px;padding:7px 12px}.app-layout{max-width:1560px;margin:auto}.sidebar{padding:17px 26px;background:white;border-bottom:1px solid var(--line)}#exercises{display:flex;gap:11px;flex-wrap:wrap}.exercise-link{font-size:15px;display:flex;align-items:center;gap:9px;border:1px solid #c0d0dc;box-shadow:none;padding:10px 13px;min-height:44px}.exercise-link .exnum{font-size:13px;color:#566b7a}.exercise-link.active{background:var(--blue-soft);border:2px solid var(--blue);box-shadow:0 3px 0 var(--blue);color:#005b84}.exercise-link.active .exnum{color:#005b84}.exercise-link:hover:not(:disabled){box-shadow:0 2px 0 #9caebb}.eyebrow{font-size:13px;letter-spacing:.65px;font-weight:750;color:#48606f}main{padding:25px 26px 35px}.exercise-heading{display:flex;align-items:center;justify-content:space-between;gap:20px}.concept{font-size:14px;color:#3b5261;background:white;border:1px solid var(--line);padding:6px 11px;border-radius:8px}.summary{font-size:17px;color:var(--muted);max-width:1150px;margin:0 0 21px}
+.scenario-panel{border:1px solid #b8d8e9;border-radius:14px;padding:17px 20px 20px;background:var(--blue-soft);margin-bottom:22px}.scenario-heading{display:flex;gap:20px;align-items:center;justify-content:space-between;margin-bottom:13px}.scenario-heading h2{display:flex;align-items:center;gap:10px}.section-number{display:inline-grid;place-items:center;width:29px;height:29px;flex-shrink:0;border-radius:50%;background:#e5eff6;color:#1d5777;font-size:16px;font-weight:800}.scenario-panel .section-number{background:#0877ab;color:white}#scenario-status{font-size:14px;color:#265b75}#scenarios{display:flex;gap:12px;flex-wrap:wrap}#scenarios button{font-size:16px;padding:9px 14px}#scenarios button.selected{background:var(--cyan)}#scenarios button.selected:before{content:'✓ ';font-weight:900}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) 365px;gap:19px;align-items:start;grid-template-areas:'flow inputs' 'flow outputs';grid-template-rows:auto 1fr}.flow-panel{grid-area:flow}.lab-panel{grid-area:inputs}.equipment{grid-area:outputs}.flow-panel,.lab-panel,.equipment{background:white;border:1px solid var(--line);border-radius:14px;overflow:hidden;min-width:0}.panel-top{display:flex;justify-content:space-between;align-items:center;gap:13px;padding:16px 18px;border-bottom:1px solid var(--line)}.panel-top h2{display:flex;align-items:center;gap:10px}.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:17px 18px}.toolbar button{font-size:15px}.pace{display:flex;align-items:center;gap:7px;font-size:14px;color:#3e5667}.pace select{font:inherit;color:var(--ink);padding:8px 6px;border:1px solid #98adbc;border-radius:7px;background:white}
+.step-explanation{margin:0 18px 16px;padding:14px 17px;border:1px solid #ddbf6c;border-left:5px solid #c78a13;border-radius:9px;background:#fff9e8;min-height:130px}.step-kind{font-size:12px;color:#72500b;font-weight:800;letter-spacing:.6px}.step-explanation h3{font-size:21px;margin:5px 0 7px}.step-explanation p{font-size:16px;line-height:1.5;margin:0;color:#263b47}.result-pill{display:block;font-size:16px;margin-top:9px;color:#493300;font-weight:600}.result-pill b{display:inline-block;background:var(--active);padding:1px 7px;border-radius:5px;color:#392600}.flow-legend{display:flex;flex-wrap:wrap;align-items:center;gap:18px;padding:12px 18px;border-top:1px solid #e3e9ef;border-bottom:1px solid #e3e9ef;font-size:14px;color:#344d5e}.flow-legend>span{display:flex;align-items:center;gap:8px}.key{display:inline-block;width:14px;height:14px;flex-shrink:0;background:#fff;border:2px solid #4d6373;border-radius:2px}.key.test{transform:rotate(45deg);border-color:#16729d;background:#e4f4ff}.key.active{background:var(--active);border-color:var(--active-line)}.loop-count{margin-left:auto;font-size:13px;color:#455a69}.graph-scroll{height:570px;overflow:auto;scrollbar-width:thin;scrollbar-color:#8da5b7 #f1f4f7;background:white;position:relative;padding:19px 0}#graph{display:block;height:auto;width:100%;margin:auto}.node{cursor:pointer;outline:none}.node .shape{stroke-width:2.2;transition:fill .18s}.node.test .shape{fill:#eaf6ff;stroke:#2478a1}.node.action .shape,.node.wait .shape{fill:#fff;stroke:#617889}.node.start .shape{fill:#eaf0f5;stroke:#405b6e}.node text{font:650 19px 'Segoe UI',Arial,sans-serif;fill:#172b3a;pointer-events:none}.node.active .shape{fill:var(--active);stroke:var(--active-line);stroke-width:4}.node.active text{fill:#342300;font-weight:750}.node:focus .shape{stroke:#005983;stroke-width:4}.running .node.active .shape{animation:nodepulse 1.7s ease-in-out infinite}.edge{fill:none;stroke:#61798b;stroke-width:2.5}.edge.taken{stroke:var(--active-line);stroke-width:4;stroke-dasharray:8 5}.running .edge.taken{animation:travel 1.15s linear infinite}.edge-label rect{fill:white}.edge-label text{font:750 17px 'Segoe UI',Arial,sans-serif;fill:#263f51}.edge-label.taken rect{fill:#fff0b6}.edge-label.taken text{fill:#553700}.diagram-footer{display:flex;align-items:center;justify-content:space-between;gap:20px;border-top:1px solid var(--line);padding:14px 18px;font-size:14px;color:#465b6a}.diagram-footer .text-button{font-size:14px}
+.lab-intro{margin:14px 18px;font-size:15px;line-height:1.55;color:#465b6a}#controls{padding:0 17px 12px}.control{padding:13px 0;margin:0;border-bottom:1px solid #e2e8ed}.control:last-child{border-bottom:0}.control-head{display:flex;align-items:center;gap:10px;justify-content:space-between}.control-label{font-size:16px;font-weight:650;display:flex;align-items:center;gap:9px}.sensor-light{width:11px;height:11px;flex-shrink:0;border-radius:50%;border:2px solid #8198a9;background:white}.control.sensing .sensor-light{background:var(--active);border-color:var(--active-line);box-shadow:0 0 0 4px #ffde793d}.control.sensing .control-label{color:#72500b}.running .control.sensing .sensor-light{animation:sensorpulse 1.7s infinite}.toggle{min-width:68px;min-height:38px;padding:5px 10px;font-size:16px}.toggle[aria-pressed=true]{background:var(--cyan)}.control select{display:block;width:100%;margin-top:10px;background:#fff;border:1.5px solid #7792a5;border-radius:8px;padding:10px;color:var(--ink);font-size:16px}.control input[type=range]{accent-color:var(--blue);width:100%;margin:14px 0 0;min-height:24px;cursor:pointer}.control output{font-weight:750;font-size:16px;color:#006493;white-space:nowrap}.input-hint{font-size:13px;color:#5a4a25;margin:9px 0 0;line-height:1.4}.input-hint:not([hidden]){display:none}.control:has(button:disabled) .input-hint:not([hidden]){display:block}.equipment-body{padding:17px 18px}#outputs{display:grid;gap:12px}.output-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px solid #e4e9ee;font-size:16px}.output-row:last-child{padding-bottom:0;border:0}.output-symbol{display:grid;place-items:center;width:35px;height:35px;border:1px solid #bcccd7;background:#f3f6f8;border-radius:8px;font-size:22px;color:#425e71}.output-value{margin-left:auto;font-size:15px;color:#3e586a;font-weight:750}.output-row.on .output-value{color:#005e87}.output-row.acting .output-symbol{background:var(--active);border-color:var(--active-line);color:#4f3500}.running .output-row.acting .output-symbol{animation:actuate 1.7s infinite}.memory-grid{font-size:14px;line-height:1.9;border-top:1px solid var(--line);padding-top:13px;margin-top:16px}.memory-grid>div{display:flex;align-items:center;justify-content:space-between;gap:9px}.memory-grid b{color:#00608d}
+.learning-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:24px}.lesson,.challenge{background:white;border:1px solid var(--line);border-radius:13px;padding:22px}.lesson h2,.challenge h2{font-size:21px;margin:8px 0 12px}.lesson p{font-size:17px;color:#354e60}.challenge .eyebrow,.lesson .eyebrow{color:#0a6895}details{font-size:15px;color:#405667}summary{font-weight:700;cursor:pointer}details p{margin:12px 0 0}#answers{display:flex;gap:12px;flex-wrap:wrap}#answers button{font-size:16px}#answers button.correct{background:#e1f2e7;border-color:#286441}#answers button.wrong{background:#fff0cf;border-color:#8b5d15}#feedback{font-size:16px;margin-top:15px;margin-bottom:0}#feedback:empty{display:none}.trace{margin-top:22px;background:white;border:1px solid var(--line);border-radius:10px;padding:15px 20px}.trace ol{line-height:1.9;padding-left:22px;margin-bottom:0}.main-footer{display:flex;justify-content:space-between;gap:20px;padding-top:24px;font-size:14px;color:#4d6576}.error{border:1px solid #c17f46;padding:10px;border-radius:6px;color:#773900;background:#fff1e5;font-size:15px;margin-top:10px}.workspace.wide{grid-template-areas:'flow flow' 'inputs outputs';grid-template-columns:1fr 1fr;grid-template-rows:auto auto}.workspace.wide .graph-scroll{height:auto;max-height:none}.workspace.wide #graph{max-width:950px!important}.workspace.wide .flow-panel{overflow:visible}.workspace.wide .toolbar{position:sticky;top:0;background:white;z-index:3;border-bottom:1px solid var(--line)}
+ dialog{border:1px solid #b5c8d7;border-radius:16px;max-width:680px;width:calc(100% - 30px);padding:28px;color:var(--ink);box-shadow:0 25px 90px #172b3a30}dialog::backdrop{background:#172b3a75}.dialog-top{display:flex;align-items:center;justify-content:space-between;gap:12px}dialog h2{font-size:30px;line-height:1.2;margin:18px 0 24px}.guide-row{display:flex;align-items:center;gap:24px;margin:22px 0}.guide-row p{font-size:16px;margin:0}.guide-shape{flex-shrink:0;width:94px;height:50px;display:grid;place-items:center;font-size:14px;background:#fff;border:2px solid #647e90}.guide-shape.start{border-radius:40px;background:#eaf0f5}.guide-shape.test{clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);height:68px;background:#c9eaff;border:0}.guide-loop{width:94px;flex-shrink:0;text-align:center;font-size:41px;color:#1f617f}.guide-tip{background:#f1f6fa;border-radius:8px;padding:15px;font-size:15px;color:#354e60}.motion-option{font-size:16px;display:flex;align-items:center;gap:9px}.skip{position:absolute;top:-100px;left:12px;padding:12px;background:white;z-index:99}.skip:focus{top:8px}
+@keyframes nodepulse{50%{fill:#ffeb9e;stroke-width:5}}@keyframes sensorpulse{50%{box-shadow:0 0 0 6px #ffde7970}}@keyframes actuate{50%{background:#ffecac;transform:scale(1.07)}}@keyframes travel{to{stroke-dashoffset:-26}}.reduced-motion *{animation:none!important;transition:none!important;scroll-behavior:auto!important}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media(min-width:1400px){.graph-scroll{height:670px}.workspace{grid-template-columns:minmax(0,1fr) 390px}.step-explanation{min-height:120px}}
+@media(max-width:1150px){.workspace{grid-template-columns:minmax(0,1fr) 320px;gap:16px}main{padding:22px 20px}.sidebar{padding:15px 20px}.topbar{padding:16px 20px;gap:16px}.header-label{font-size:14px}.toolbar{gap:10px;padding:15px}.toolbar button{font-size:14px;padding:9px 11px}.panel-top{padding:15px}.panel-top h2{font-size:18px}.panel-top .text-button{font-size:13px}.step-explanation{margin:0 15px 15px;padding:13px 15px}.control-label{font-size:15px}.control output{font-size:15px}.concept{display:none}.graph-scroll{height:520px}.loop-count{margin-left:0}}
+@media(max-width:820px){.header-label{display:none}.workspace{grid-template-columns:1fr 1fr;grid-template-areas:'inputs outputs' 'flow flow';grid-template-rows:auto auto}.workspace.wide{grid-template-areas:'flow flow' 'inputs outputs'}.learning-grid{grid-template-columns:1fr}.scenario-heading{align-items:flex-start;flex-direction:column;gap:8px}.flow-panel .panel-top h2{font-size:20px}.graph-scroll{height:540px}.main-footer{flex-wrap:wrap}.step-explanation{min-height:0}.toolbar button{font-size:15px}}
+@media(max-width:550px){body{font-size:16px}.topbar{gap:11px;padding:12px 14px;flex-wrap:wrap}.brand{font-size:24px}.brandmark{font-size:32px}.series-tag{font-size:14px}.help-button{font-size:13px;padding:6px 9px;min-height:36px}.sidebar{padding:12px 14px}#exercises{flex-wrap:nowrap;overflow:auto;padding:0 0 5px;gap:9px}.exercise-link{flex:0 0 auto;max-width:205px;font-size:14px;padding:9px 11px}.exercise-link .exnum{font-size:12px}main{padding:20px 14px}h1{font-size:28px}.summary{font-size:16px}.scenario-panel{padding:15px}.scenario-heading h2{font-size:19px}#scenarios{gap:10px}#scenarios button{font-size:15px;padding:8px 11px}.workspace,.workspace.wide{grid-template-columns:1fr;grid-template-areas:'inputs' 'flow' 'outputs';grid-template-rows:auto auto auto}.workspace.wide{grid-template-areas:'flow' 'inputs' 'outputs'}.lab-panel .panel-top,.equipment .panel-top{padding:14px}.lab-intro{font-size:15px}.control-label{font-size:16px}.control output{font-size:16px}.panel-top{align-items:flex-start;flex-wrap:wrap;gap:6px}.flow-panel .panel-top h2{font-size:19px}.text-button{font-size:14px!important}.toolbar{gap:11px}.toolbar button{font-size:14px}.step-explanation h3{font-size:20px}.step-explanation p,.result-pill{font-size:16px}.flow-legend{gap:13px;font-size:14px;padding:12px 15px}.loop-count{font-size:13px}.graph-scroll{height:460px}.diagram-footer{align-items:flex-start;flex-direction:column;gap:8px;font-size:14px}.diagram-footer:before{content:'↔ Fais glisser le schéma pour voir les deux branches.';color:#526979;font-size:13px}.learning-grid{gap:16px}.lesson,.challenge{padding:18px}.lesson p{font-size:16px}.main-footer{font-size:13px}dialog{padding:20px}.guide-row{gap:16px}.guide-shape,.guide-loop{width:70px}.guide-row p{font-size:15px}}
+/* Donner la priorité au logigramme dès le haut de la page. */
+.topbar{padding-top:11px;padding-bottom:11px}.sidebar{padding-top:12px;padding-bottom:12px}main{padding-top:20px}.summary{margin-bottom:16px}.scenario-panel{display:grid;grid-template-columns:245px 1fr;gap:20px;align-items:center;padding:15px 18px;margin-bottom:18px}.scenario-heading{display:block;margin:0}.scenario-heading h2{font-size:19px;margin-bottom:5px}#scenario-status{font-size:13px}.step-explanation{min-height:108px;padding-top:12px;padding-bottom:12px}.toolbar{padding-top:14px;padding-bottom:14px}
+@media(max-width:1000px){.scenario-panel{display:block}.scenario-heading{display:flex;flex-direction:row;align-items:center;margin-bottom:12px}.scenario-heading h2{margin-bottom:0}}
+@media(max-width:550px){.scenario-heading{display:block}.scenario-heading h2{margin-bottom:5px}.scenario-panel{padding:15px}.step-explanation{min-height:0}}
+</style></head>
+<body><a class="skip" href="#main">Aller à l’exercice</a>
+<header class="topbar"><a class="brand" href="./"><span class="brandmark">◇</span> Logi<span>Lab</span></a><div class="header-label">Comprendre les logigrammes · Technologie 4<sup>e</sup></div><span class="series-tag">Série 2</span><button class="help-button" id="help">Comment ça marche ?</button></header>
+<div class="app-layout"><aside class="sidebar"><nav id="exercises" aria-label="Exercices"></nav></aside>
+<main id="main"><div class="exercise-heading"><div><div class="eyebrow" id="breadcrumb"></div><h1 id="title"></h1></div><span class="concept" id="concept"></span></div><p class="summary" id="summary"></p>
+<section class="scenario-panel" aria-labelledby="scenario-title"><div class="scenario-heading"><h2 id="scenario-title"><span class="section-number">1</span> Choisis une situation</h2><span id="scenario-status" role="status">Ou règle toi-même les capteurs.</span></div><div id="scenarios"></div></section>
+<div class="workspace" id="workspace"><section class="flow-panel" aria-labelledby="flow-title"><div class="panel-top"><h2 id="flow-title"><span class="section-number">3</span> Suis le logigramme</h2><button id="wide" class="text-button" aria-pressed="false">Agrandir le schéma</button></div>
+<div class="toolbar"><button class="primary" id="step">Avancer d’un pas →</button><button id="play">▶ Lecture auto</button><button id="back" title="Revenir à l’étape précédente" aria-label="Étape précédente">↶ Précédent</button><button id="reset" title="Réinitialiser">Recommencer</button><label class="pace">Rythme <select id="pace"><option value="1600">Lent</option><option value="950" selected>Normal</option><option value="500">Rapide</option></select></label></div>
+<div class="step-explanation" id="step-explanation" aria-live="polite" aria-atomic="true"><span class="step-kind" id="step-kind">POUR COMMENCER</span><h3 id="step-title">Avance d’un pas.</h3><p id="step-text">Le bloc actif s’éclaire en jaune. La flèche indique le chemin suivi.</p><div id="result"></div></div>
+<div class="flow-legend"><span><i class="key test"></i>Question</span><span><i class="key action"></i>Action</span><span><i class="key active"></i>Étape en cours</span><span class="loop-count" id="loop-count">0 retour en boucle</span></div><div class="graph-scroll" id="graph-scroll"><svg id="graph" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Logigramme de correction interactif"></svg></div><div class="diagram-footer"><span>↶ Une boucle fait recommencer.<br>Clique un bloc pour lire son explication.</span><button id="center" class="text-button">Revenir à l’étape en cours</button></div></section>
+<aside class="lab-panel" aria-labelledby="sensors-title"><div class="panel-top"><h2 id="sensors-title"><span class="section-number">2</span> Règle les capteurs</h2></div><p class="lab-intro">Ces commandes remplacent les vrais capteurs. Tu peux les modifier pendant la simulation.</p><div id="controls"></div></aside>
+<section class="equipment" aria-labelledby="outputs-title"><div class="panel-top"><h2 id="outputs-title"><span class="section-number">4</span> Observe les actions</h2></div><div class="equipment-body"><div id="outputs"></div><div id="memory"></div></div></section></div>
+<div class="learning-grid"><section class="lesson"><div class="eyebrow">À RETENIR</div><h2 id="lesson-title">Pourquoi ce chemin ?</h2><p id="lesson"></p><details><summary>Les simplifications de cette simulation</summary><p id="note"></p></details></section><section class="challenge"><div class="eyebrow">VÉRIFIE QUE TU AS COMPRIS</div><h2 id="question"></h2><div id="answers"></div><p id="feedback" aria-live="polite"></p></section></div>
+<details class="trace"><summary>Relire les dernières étapes exécutées</summary><ol id="trace"></ol></details><footer class="main-footer"><span>Technologie · Corrections de Vincent Belhaire</span><a id="source" target="_blank" rel="noopener">Correction de référence ↗</a></footer></main></div>
+<dialog id="guide"><div class="dialog-top"><span class="eyebrow">LES REPÈRES</span><button id="close-help" aria-label="Fermer les repères">✕</button></div><h2>Lire, décider, agir.<br>Et recommencer.</h2><div class="guide-row"><span class="guide-shape start">Début</span><p><b>Le départ.</b> Il indique où commence le programme.</p></div><div class="guide-row"><span class="guide-shape test">?</span><p><b>Le losange pose une question.</b> Le programme lit une information, puis suit Oui ou Non.</p></div><div class="guide-row"><span class="guide-shape action">Action</span><p><b>Le rectangle donne un ordre.</b> Un moteur, une sirène ou un afficheur agit. Certaines actions traitent aussi des données.</p></div><div class="guide-row"><span class="guide-loop">↶</span><p><b>Une flèche de retour crée une boucle.</b> Le programme répète un test ou une suite d’étapes.</p></div><p class="guide-tip"><b>Pour expérimenter :</b> choisis une situation, fais « Avancer d’un pas », puis observe. Une entrée modifiée est prise en compte au prochain passage dans son test. Clique un bloc pour lire son explication, sans déplacer le programme.</p><p class="guide-tip">Les boutons et menus remplacent les vrais capteurs. Les voyants montrent les actions ; aucune sirène sonore n’est jouée. En pause, tu peux lire à ton rythme.</p><label class="motion-option"><input type="checkbox" id="motion"> Réduire les animations</label></dialog>
+<script>const SERIES=2;</script><script>
+const Q=(id,label,row,yes,no,sensor,test,explain,lane=0)=>({id,label,row,yes,no,sensor,test,explain,lane,type:'test'});
+const A=(id,label,row,next,effect,explain,lane=0)=>({id,label,row,next,effect,explain,lane,type:'action'});
+const S=(next)=>({id:'start',label:'Début',row:0,next,type:'start',lane:0,explain:'Le programme démarre. Suis les flèches : une seule étape est exécutée à la fois.'});
+const B=(key,label,value=false)=>({key,label,type:'bool',value});
+const R=(key,label,value,min,max,unit,step=1)=>({key,label,type:'range',value,min,max,unit,step});
+const C=(key,label,value,options)=>({key,label,value,options,type:'select'});
+const EXERCISES=[
+{id:'moto',series:1,num:'01',title:'Alarme de moto',tag:'Deux conditions · ET',summary:'La sirène se déclenche si l’alarme est activée et si la moto est déplacée.',controls:[B('armed','Alarme activée'),B('moved','Moto déplacée')],outputs:['Sirène'],initial:{siren:false},nodes:[S('armed'),Q('armed','Alarme activée ?',1,'moved','armed','armed','armed','Le système lit l’état de l’alarme. Si elle est désactivée, il revient à cette question.'),Q('moved','Moto déplacée ?',2,'alarm','armed','moved','moved','Le capteur de mouvement est interrogé. Si la moto ne bouge pas, on revient à « Alarme activée ? » : le système vérifie à nouveau si la surveillance est toujours demandée.'),A('alarm','Déclencher l’alarme',3,'armed','alarm','Les deux réponses sont Oui : la sirène se déclenche. Le programme reprend la surveillance.')],scenarios:[['Au repos',{armed:false,moved:false}],['Sous surveillance',{armed:true,moved:false}],['Déclenchement',{armed:true,moved:true}]],lesson:'Deux tests successifs forment un ET : l’alarme doit être activée ET la moto déplacée. Un seul Oui ne suffit pas.',note:'Essaie « Sous surveillance », puis désactive l’alarme pendant l’attente : la branche Non de « Moto déplacée ? » revient à « Alarme activée ? ». Le système relit donc la commande avant de surveiller à nouveau le mouvement. Le document ne précise ni la durée ni l’arrêt d’une sirène déjà déclenchée : son voyant conserve ici la trace du déclenchement jusqu’à la réinitialisation.',quiz:['L’alarme est désactivée, mais la moto bouge. La sirène se déclenche-t-elle ?',['Oui','Non'],1,'Le premier test répond Non : le programme n’atteint pas l’action « Déclencher l’alarme ».']},
+{id:'radar',series:1,num:'02',title:'Radar de vitesse',tag:'Seuil · Séquence',summary:'Au-delà de 80 km/h, le radar active le flash, lit la plaque, prend une photo et l’envoie.',controls:[B('vehicle','Véhicule détecté',true),R('speed','Vitesse mesurée',80,0,150,'km/h')],outputs:['Flash','Lecture de plaque','Photo','Envoi'],initial:{photos:0},nodes:[S('fast'),Q('fast','Véhicule détecté\nà plus de 80 km/h ?',1,'flash','fast','speed','fast','Il faut un véhicule ET une vitesse strictement supérieure à 80 km/h. À 80, la réponse est Non.'),A('flash','Activer le flash',2,'plate','flash','Le flash éclaire la plaque. On suit l’ordre de la correction de référence.'),A('plate','Lire la plaque',3,'photo','plate','Le système lit la plaque d’immatriculation.'),A('photo','Prendre une photo',4,'send','photo','Une photo est prise après le flash et la lecture de la plaque.'),A('send','Envoyer la photo',5,'fast','send','La photo est envoyée, puis le radar surveille le véhicule suivant.')],scenarios:[['À la limite : 80',{vehicle:true,speed:80}],['En excès : 81',{vehicle:true,speed:81}],['Aucun véhicule',{vehicle:false,speed:100}]],lesson:'Le symbole > signifie « strictement supérieur à ». 80 > 80 est faux ; 81 > 80 est vrai. Les rectangles sont ensuite exécutés dans l’ordre des flèches.',note:'Après l’envoi, le véhicule est considéré comme passé : sa détection est remise à Non. La simulation n’applique aucune tolérance de mesure.',quiz:['À exactement 80 km/h, quelle branche suit-on ?',['Oui : le flash','Non : la surveillance'],1,'80 est égal à 80, pas supérieur. Le radar reste dans sa boucle de surveillance.']},
+{id:'metro',series:1,num:'03',title:'Portique de métro',tag:'Choix · Boucle d’attente',summary:'Le ticket est vérifié puis rendu. S’il est valide, le portique s’ouvre et attend le passage de l’usager avant de se fermer.',controls:[B('ticket','Ticket introduit'),B('valid','Ticket valide',true),B('passed','Usager passé')],outputs:['Lecteur de ticket','Retour du ticket','Portique'],initial:{door:false,returned:false},nodes:[S('ticket'),Q('ticket','Ticket présent ?',1,'verify','ticket','ticket','ticket','Sans ticket, le système attend en revenant au même test.'),A('verify','Vérifier le ticket',2,'valid','verify','Le lecteur contrôle le ticket. Vérifier est une action ; le résultat sera testé dans le losange suivant.'),Q('valid','Ticket valide ?',3,'returnok','returnbad','valid','valid','La validité détermine si le portique pourra s’ouvrir.'),A('returnok','Rendre le ticket',4,'open','return','Même valide, le ticket est rendu à l’utilisateur.'),A('returnbad','Rendre le ticket',4,'ticket','return','Le ticket invalide est rendu. Le portique reste fermé ; on attend un nouveau ticket.',1),A('open','Ouvrir le portique',5,'passed','open','Le moteur ouvre le portique.'),Q('passed','Usager passé ?',6,'close','passed','passed','passed','Tant que le capteur ne détecte pas le passage, le portique reste ouvert.'),A('close','Fermer le portique',7,'ticket','close','Le passage a été détecté : le portique se ferme et attend un nouveau ticket.')],scenarios:[['Sans ticket',{ticket:false,valid:true,passed:false}],['Ticket refusé',{ticket:true,valid:false,passed:false}],['Ticket accepté',{ticket:true,valid:true,passed:false}]],lesson:'« Vérifier le ticket » est une action. « Ticket valide ? » est une condition. La boucle de passage maintient le portique ouvert sans répéter l’ouverture.',note:'Le capteur après le portique est simplifié par « Usager passé ». Le ticket introduit est remis à Non lorsqu’il est rendu.',quiz:['Le ticket est valide, mais l’usager n’est pas passé. Que fait le portique ?',['Il se referme','Il reste ouvert'],1,'Le test « Usager passé ? » répond Non. La boucle attend le passage avant de fermer.']},
+{id:'drink1',series:1,num:'04a',title:'Distributeur · pièce de 1 €',tag:'Égalité · Deux branches',summary:'Une boisson coûte 1 €. Seule une pièce de 1 € est acceptée. Toute autre pièce est rendue.',controls:[B('selected','Boisson sélectionnée'),C('coin','Pièce insérée','1',[['0.1','0,10 €'],['0.2','0,20 €'],['0.5','0,50 €'],['1','1 €'],['2','2 €']])],outputs:['Afficheur','Distribution','Retour de monnaie'],initial:{drinks:0,change:0,price:false},nodes:[S('selected'),Q('selected','Boisson sélectionnée ?',1,'price','selected','selected','selected','La machine attend que le client choisisse une boisson.'),A('price','Afficher le prix : 1 €',2,'coin1','price','L’afficheur indique le prix de la boisson.'),Q('coin1','Pièce = 1 € ?',3,'serve','reject','coin','coin1','On compare la pièce insérée à 1 €. Ici, il faut exactement 1 €.'),A('serve','Distribuer la boisson',4,'selected','drink','La pièce est acceptée. Une boisson est distribuée, puis on attend une nouvelle sélection.'),A('reject','Rejeter la pièce',4,'selected','reject','La pièce est rendue sans distribuer de boisson. Le programme revient à la sélection.',1)],scenarios:[['Pièce acceptée',{selected:true,coin:'1'}],['Pièce refusée',{selected:true,coin:'0.5'}],['Essayer 2 €',{selected:true,coin:'2'}]],lesson:'Un losange propose deux issues. « Non » ne veut pas toujours dire attendre : ici, il conduit à une autre action, rejeter la pièce.',note:'Comme dans la correction, on suppose qu’une pièce est insérée après le choix. Le menu règle cette pièce ; on ne cumule pas plusieurs petites pièces.',quiz:['Avec une pièce de 2 €, cette première version distribue-t-elle une boisson ?',['Oui, car 2 € suffisent','Non, la pièce est rejetée'],1,'Cette version teste « = 1 € », pas « ≥ 1 € ». Une pièce de 2 € suit donc la branche Non.']},
+{id:'drink2',series:1,num:'04b',title:'Distributeur · 1 € ou 2 €',tag:'Choix successifs · OU',summary:'Le prix reste 1 €. La machine accepte une pièce de 1 € ou de 2 € et rend 1 € si nécessaire.',controls:[B('selected','Boisson sélectionnée'),C('coin','Pièce insérée','2',[['0.1','0,10 €'],['0.2','0,20 €'],['0.5','0,50 €'],['1','1 €'],['2','2 €']])],outputs:['Afficheur','Distribution','Retour de monnaie'],initial:{drinks:0,change:0,price:false},nodes:[S('selected'),Q('selected','Boisson sélectionnée ?',1,'price','selected','selected','selected','Le système attend le choix d’une boisson.'),A('price','Afficher le prix : 1 €',2,'coin1','price','Accepter 2 € ne change pas le prix : la boisson coûte toujours 1 €.'),Q('coin1','Pièce = 1 € ?',3,'serve','coin2','coin','coin1','Si c’est 1 €, on distribue directement. Sinon, il faut encore tester si c’est 2 €.'),Q('coin2','Pièce = 2 € ?',4,'change','reject','coin','coin2','Ce second test est effectué seulement si la pièce n’est pas de 1 €.',1),A('change','Rendre 1 €',5,'serve','change','La machine rend 2 € − 1 € = 1 €, puis distribue la boisson.',1),A('serve','Distribuer la boisson',6,'selected','drink','Une pièce de 1 € OU une pièce de 2 € donne accès à cette action.'),A('reject','Rejeter la pièce',2,'selected','reject','La pièce n’est ni de 1 € ni de 2 € : elle est rendue, puis on attend une nouvelle sélection.',1)],scenarios:[['Avec 1 €',{selected:true,coin:'1'}],['Avec 2 €',{selected:true,coin:'2'}],['Avec 0,50 €',{selected:true,coin:'0.5'}]],lesson:'Les deux pièces sont des possibilités alternatives : 1 € OU 2 €. Les deux tests n’ont pas besoin de répondre Oui ensemble.',note:'Le libellé 04a / 04b correspond aux deux sous-parties 5.1 / 5.2 de l’exercice 4 du PDF. Pour 2 €, l’ordre suit la correction de référence : rendre 1 €, puis distribuer.',quiz:['Avec 2 €, que fait la machine avant de distribuer ?',['Elle rejette 2 €','Elle rend 1 €','Elle attend une autre pièce'],1,'Le prix reste 1 €. Elle rend donc 1 € de monnaie avant de distribuer.']},
+{id:'garage',series:2,num:'01',title:'Porte de garage',tag:'Commandes · Surveillance',summary:'Le bouton 1 ouvre le garage. Le bouton 2 le ferme. Sans appui, le système continue de surveiller les commandes.',controls:[C('button','Bouton de la télécommande','none',[['none','Aucun bouton'],['open','Bouton 1 · ouvrir'],['close','Bouton 2 · fermer']])],outputs:['Moteur','Porte de garage'],initial:{door:false},nodes:[S('b1'),Q('b1','Bouton 1 appuyé ?',1,'open','b2','button','b1','Le programme commence par vérifier le bouton d’ouverture.'),Q('b2','Bouton 2 appuyé ?',2,'close','b1','button','b2','Si le bouton 1 n’est pas appuyé, le système vérifie le bouton de fermeture.'),A('open','Ouvrir le garage',3,'b1','open','Le moteur ouvre la porte. Le système revient ensuite surveiller les boutons.',1),A('close','Fermer le garage',3,'b1','close','Le moteur ferme la porte, puis le système surveille de nouveau les boutons.')],scenarios:[['Aucune commande',{button:'none'}],['Ouvrir',{button:'open'}],['Fermer',{button:'close'}]],lesson:'La boucle de surveillance interroge les deux boutons. On peut demander une fermeture sans devoir lancer une nouvelle ouverture avant.',note:'Les déplacements sont simplifiés en actions instantanées. Les commandes simultanées ne sont pas étudiées. Après exécution, le bouton est relâché automatiquement.',quiz:['Sans aucun appui, le programme s’arrête-t-il ?',['Oui','Non, il surveille les boutons'],1,'Les deux tests répondent Non et les flèches ramènent au premier test. C’est une boucle.']},
+{id:'coffee',series:2,num:'02',title:'Machine à café',tag:'Conditions · Boucle de chauffe',summary:'Après un appui, le café est servi seulement si le réservoir contient de l’eau et si sa température dépasse 88 °C.',controls:[B('button','Bouton café activé'),B('water','Eau présente',true),R('temp','Température de l’eau',80,20,100,'°C')],outputs:['Demande d’eau','Résistance','Distribution'],initial:{coffees:0},nodes:[S('button'),Q('button','Bouton café activé ?',1,'water','button','button','button','Un appui lance la préparation du café.'),Q('water','Eau présente ?',2,'temp','addwater','water','water','La machine vérifie le niveau d’eau avant toute chauffe.'),A('addwater','Ajouter de l’eau',3,'water','addwater','La machine demande d’ajouter de l’eau. Active « Eau présente » pour simuler le remplissage par l’utilisateur.',1),Q('temp','Température > 88 °C ?',4,'serve','heat','temp','temp','À 88 °C, la réponse est encore Non : il faut dépasser 88 °C.'),A('heat','Chauffer l’eau',5,'temp','heat','La résistance chauffe. Ici, chaque passage ajoute 2 °C, puis le capteur est interrogé à nouveau.',1),A('serve','Servir le café',6,'button','coffee','Toutes les conditions sont réunies. Un café est servi et l’appui est consommé.')],scenarios:[['Réservoir vide',{button:true,water:false,temp:80}],['Eau à 84 °C',{button:true,water:true,temp:84}],['À la limite : 88 °C',{button:true,water:true,temp:88}],['Prêt à servir',{button:true,water:true,temp:90}]],lesson:'La boucle de chauffe alterne une action et un test : chauffer → mesurer → recommencer si nécessaire. Le capteur mesure ; la résistance agit.',note:'Le remplissage est manuel. La hausse de 2 °C par action sert à observer la boucle ; elle ne représente pas la durée réelle d’une chauffe.',quiz:['À 88 °C avec de l’eau, quelle est l’action suivante ?',['Servir le café','Chauffer encore'],1,'Le test demande une température strictement supérieure à 88 °C. À 88 °C, on chauffe encore.']},
+{id:'hotel',series:2,num:'03',title:'Réception d’un hôtel',tag:'Jour / nuit · Temporisation',summary:'Le jour, le concierge autorise l’accès. La nuit, le client utilise le digicode. La porte est déverrouillée pendant 5 secondes.',controls:[R('hour','Heure de la journée',12,0,23,'h'),B('concierge','Bouton du concierge'),B('code','Digicode correct')],outputs:['Serrure','Temporisation'],initial:{door:false,seconds:0},nodes:[S('day'),Q('day','De 8 h à 22 h ?',1,'concierge','code','hour','day','Convention : le jour va de 08:00 inclus à 22:00 exclu. À 22:00, on passe au mode nuit.'),Q('concierge','Bouton du concierge\nappuyé ?',2,'unlock','day','concierge','concierge','Le jour, seul le bouton du concierge autorise l’accès. Sinon, on revient vérifier l’heure.'),Q('code','Digicode correct ?',2,'unlock','day','code','code','La nuit, seul le code correct autorise l’accès. Un code incorrect renvoie à la vérification de l’heure.',1),A('unlock','Déverrouiller la porte',3,'wait','unlock','La serrure se déverrouille. Déverrouiller permet d’ouvrir la porte ; cela ne signifie pas qu’un moteur l’ouvre.'),{...A('wait','Attendre 5 secondes',4,'lock','wait','En lecture, le compteur avance d’une seconde à la fois. En pas à pas, chaque clic fait passer une seconde simulée.'),type:'wait'},A('lock','Verrouiller la porte',5,'day','lock','Après les 5 secondes, la serrure se verrouille. Le système revient au choix jour/nuit.')],scenarios:[['Jour · concierge',{hour:12,concierge:true,code:false}],['Nuit · code faux',{hour:23,concierge:false,code:false}],['Nuit · code correct',{hour:23,concierge:false,code:true}],['À 22 h',{hour:22,concierge:true,code:false}]],lesson:'Deux chemins peuvent rejoindre la même action. La boucle repasse par l’heure pour rester valable lorsque le jour devient la nuit.',note:'La nuit traverse minuit : heure ≥ 22 h OU heure < 8 h. Les bornes ambiguës du document sont précisées ici : 8 h appartient au jour, 22 h à la nuit.',quiz:['Il est 23 h. Le concierge appuie mais le code est faux. La porte se déverrouille-t-elle ?',['Oui','Non'],1,'À 23 h, on suit la branche nuit. Le programme teste le digicode, pas le bouton du concierge.']},
+{id:'parking',series:2,num:'04',title:'Parking',tag:'Variables · Paiement · Boucles',summary:'À l’entrée, la plaque et l’heure sont mémorisées. À la sortie, le prix est calculé à 1 € par heure ; le paiement autorise l’ouverture.',controls:[B('entry','Voiture à l’entrée'),B('exit','Voiture à la sortie'),R('clock','Heure actuelle',10,0,48,'h',0.5),B('paid','Parking payé'),B('passed','Voiture passée')],outputs:['Caméra','Barrière','Afficheur'],initial:{door:false,plate:null,arrival:null,price:null,read:null},nodes:[S('entry'),Q('entry','Voiture à l’entrée ?',1,'readin','exit','entry','entry','On surveille l’entrée, puis la sortie si aucune voiture n’arrive.'),Q('exit','Voiture à la sortie ?',1,'readout','entry','exit','exit','Sans voiture en sortie non plus, on revient surveiller l’entrée.',1),A('readin','Lire la plaque « entrée »',2,'saveplate','readin','La caméra lit la plaque du véhicule de démonstration : AB-123-CD.'),A('saveplate','Mémoriser la plaque',3,'savetime','saveplate','La valeur AB-123-CD est placée dans la variable plaque.'),A('savetime','Mémoriser l’heure d’entrée',4,'openin','savetime','La variable heure_entrée prend la valeur actuelle de l’horloge. Elle ne changera pas quand l’heure avancera.'),A('openin','Ouvrir la barrière',5,'passin','openin','La barrière s’ouvre pour laisser entrer la voiture.'),Q('passin','Voiture passée ?',6,'closein','passin','passed','passed','On attend la détection du passage avant de refermer.'),A('closein','Fermer la barrière',7,'entry','closein','L’entrée est terminée. Avance l’heure, active « Voiture à la sortie », puis reprends le programme.'),A('readout','Lire la plaque « sortie »',2,'calculate','readout','La caméra lit la même plaque pour retrouver l’heure d’entrée mémorisée.',1),A('calculate','Calculer le prix',3,'display','calculate','Prix = (heure actuelle − heure d’entrée) × 1 €/h. La mémoire conserve l’heure d’arrivée.',1),A('display','Afficher le prix',4,'paid','display','Le montant calculé est affiché. Aucun arrondi à l’heure supérieure n’est ajouté.',1),Q('paid','Parking payé ?',5,'openout','paid','paid','paid','Tant que le paiement n’est pas confirmé, la barrière reste fermée.',1),A('openout','Ouvrir la barrière',6,'passout','openout','Le paiement est confirmé : la barrière de sortie s’ouvre.',1),Q('passout','Voiture passée ?',7,'closeout','passout','passed','passed','Même après paiement, on attend le passage avant de fermer.',1),A('closeout','Fermer la barrière',8,'entry','closeout','Le véhicule est sorti. La barrière se ferme et la place en mémoire est libérée.',1)],scenarios:[['Commencer une entrée',{entry:true,exit:false,clock:10,paid:false,passed:false}],['Sortie · 2 h de parking',{entry:false,exit:true,clock:12,paid:false,passed:false}, {door:false,plate:'AB-123-CD',arrival:10,price:null,read:null}],['Sortie · 1 h 30',{entry:false,exit:true,clock:11.5,paid:false,passed:false},{door:false,plate:'AB-123-CD',arrival:10,price:null,read:null}]],lesson:'Une variable est une case mémoire. L’heure d’entrée reste stockée pendant que l’horloge avance. Les deux boucles de passage et la boucle de paiement répondent à trois attentes différentes.',note:'Une seule voiture est simulée, plaque AB-123-CD. Une sortie nécessite une entrée mémorisée. L’horloge va jusqu’à 48 h pour franchir minuit (26 h = lendemain 2 h).',quiz:['Entrée à 10 h ; sortie à 11 h 30. Quel prix donne la formule ?',['1 €','1,50 €','2 €'],1,'1 h 30 = 1,5 h. Donc 1,5 × 1 € = 1,50 €, sans arrondi ajouté.']}
+];
+
+</script><script>
+const copy=o=>JSON.parse(JSON.stringify(o));
+function createEngine(ex){
+ const inputs=Object.fromEntries(ex.controls.map(c=>[c.key,c.value]));
+ const s={inputs:{...inputs},memory:copy(ex.initial),current:null,next:'start',result:null,loops:0,steps:0,history:[],error:null,log:[]};
+ const node=id=>ex.nodes.find(n=>n.id===id);
+ function reset(values={},memory){Object.assign(s,{inputs:{...inputs,...values},memory:copy(memory||ex.initial),current:null,next:'start',result:null,loops:0,steps:0,history:[],error:null,log:[]});return s;}
+ function test(key){const i=s.inputs;return {armed:i.armed,moved:i.moved,fast:i.vehicle&&i.speed>80,ticket:i.ticket,valid:i.valid,passed:i.passed,selected:i.selected,coin1:Number(i.coin)===1,coin2:Number(i.coin)===2,b1:i.button==='open',b2:i.button==='close',button:i.button,water:i.water,temp:i.temp>88,day:i.hour>=8&&i.hour<22,concierge:i.concierge,code:i.code,entry:i.entry,exit:i.exit,paid:i.paid}[key]===true;}
+ function act(effect){const m=s.memory,i=s.inputs;
+  switch(effect){
+   case 'alarm':m.siren=true;break;
+   case 'send':m.photos++;i.vehicle=false;break;
+   case 'return':m.returned=true;i.ticket=false;break;
+   case 'open':m.door=true;if(ex.id==='garage')i.button='none';break;
+   case 'close':m.door=false;i.passed=false;if(ex.id==='garage')i.button='none';break;
+   case 'price':m.price=true;m.change=0;break;
+   case 'drink':m.drinks++;i.selected=false;break;
+   case 'reject':m.change=Number(i.coin);i.selected=false;break;
+   case 'change':m.change=1;break;
+   case 'heat':i.temp=Math.min(100,Number(i.temp)+2);break;
+   case 'coffee':m.coffees++;i.button=false;break;
+   case 'unlock':m.door=true;m.seconds=0;i.concierge=false;i.code=false;break;
+   case 'wait':m.seconds=5;break;
+   case 'lock':m.door=false;break;
+   case 'readin':m.read='AB-123-CD';break;
+   case 'saveplate':m.plate=m.read;break;
+   case 'savetime':m.arrival=Number(i.clock);m.price=null;break;
+   case 'openin':m.door=true;break;
+   case 'closein':m.door=false;i.entry=false;i.passed=false;break;
+   case 'readout':m.read='AB-123-CD';break;
+   case 'calculate':
+    if(m.arrival===null||m.plate!==m.read){s.error='Aucune entrée mémorisée pour cette voiture. Choisis « Commencer une entrée » ou un scénario de sortie.';break;}
+    if(Number(i.clock)<m.arrival){s.error='L’heure actuelle précède l’arrivée. Avance l’horloge ; pour le lendemain, dépasse 24 h.';break;}
+    m.price=Number(i.clock)-m.arrival;break;
+   case 'openout':if(m.price===null){s.error='Le prix doit être calculé avant de sortir.';}else m.door=true;break;
+   case 'closeout':m.door=false;i.exit=false;i.passed=false;i.paid=false;m.plate=null;m.arrival=null;m.price=null;break;
+  }
+ }
+ function step(){
+  s.history.push(copy({...s,history:[]}));if(s.history.length>120)s.history.shift();
+  s.error=null;
+  if(s.current&&node(s.current).type==='wait'&&s.memory.seconds>0){s.memory.seconds--;if(s.memory.seconds>0)return s;}
+  const n=node(s.next);if(!n)throw Error('Étape inconnue : '+s.next);
+  // An action placed above a test is still a forward branch, not another loop.
+  if(s.current&&n.type==='test'&&n.row<=node(s.current).row&&s.current!=='start')s.loops++;
+  s.current=n.id;s.steps++;s.result=n.type==='test'?test(n.test):null;
+  if(n.effect)act(n.effect);
+  s.next=s.error?n.id:n.type==='test'?(s.result?n.yes:n.no):n.next;
+  const message=n.label.replaceAll('\n',' ')+(n.type==='test'?' → '+(s.result?'Oui':'Non'):'');
+  s.log.unshift(message);s.log=s.log.slice(0,7);
+  return s;
+ }
+ function back(){const last=s.history.pop();if(last){const hist=s.history;Object.assign(s,last,{history:hist});}return s;}
+ return {s,ex,node,reset,step,back};
+}
+if(typeof module!=='undefined')module.exports={createEngine};
+
+</script><script>
+/* Rendering-only proposal. Does not change exercises or the simulation engine.
+ * graphSegments(ex, position) -> {edges,segments,labels,junctions,bounds}
+ * Every segment lists the edge keys that use it, so a common return is drawn
+ * once but can still be highlighted for any of its original transitions.
+ */
+function graphSegments(ex, position) {
+  const nodes = new Map(ex.nodes.map(n => [n.id, n]));
+  const pos = new Map(ex.nodes.map(n => [n.id, position(n)]));
+  const eps = 0.001;
+  const same = (a,b) => Math.abs(a-b)<eps;
+  const point = (x,y) => ({x,y});
+  const keyPoint = p => `${p.x},${p.y}`;
+  const eq = (a,b) => same(a.x,b.x)&&same(a.y,b.y);
+  const bounds = p => ({l:p.x-p.w/2,r:p.x+p.w/2,t:p.y-p.h/2,b:p.y+p.h/2});
+  const edgeKey = (id,branch) => `${id}:${branch}`;
+  const edgeList = [];
+  const corridorGroups = {left:new Map(),right:new Map()};
+
+  // Place return joins in the actual gap above the target. y-78 in the old
+  // renderer went through the bottom of a preceding 100px-high diamond.
+  function joinY(n) {
+    const p = pos.get(n.id), b = bounds(p);
+    const priorBottoms = ex.nodes.filter(q => q.row < n.row).map(q => bounds(pos.get(q.id)).b);
+    const previousBottom = priorBottoms.length ? Math.max(...priorBottoms) : b.t-48;
+    return b.t-Math.min(28,Math.max(8,(b.t-previousBottom)/2));
+  }
+  function segmentHitsNode(a,b,ignoreIds) {
+    return ex.nodes.some(n => {
+      if(ignoreIds.includes(n.id))return false;
+      const box=bounds(pos.get(n.id));
+      if(same(a.x,b.x))return a.x>box.l+eps&&a.x<box.r-eps&&Math.max(a.y,b.y)>box.t+eps&&Math.min(a.y,b.y)<box.b-eps;
+      return a.y>box.t+eps&&a.y<box.b-eps&&Math.max(a.x,b.x)>box.l+eps&&Math.min(a.x,b.x)<box.r-eps;
+    });
+  }
+  function pointsHitNode(points,ignoreIds) {
+    return points.some((p,i)=>i&&segmentHitsNode(points[i-1],p,ignoreIds));
+  }
+  function initialPoints(n,t) {
+    const a=pos.get(n.id),b=pos.get(t.id),aa=bounds(a),bb=bounds(b);
+    if(n.row===t.row&&b.x>a.x)return [point(aa.r,a.y),point(bb.l,b.y)];
+    if(same(a.x,b.x))return [point(a.x,aa.b),point(b.x,bb.t)];
+    if(n.type==='test'&&b.x>a.x)return [point(aa.r,a.y),point(b.x,a.y),point(b.x,bb.t)];
+    const y=joinY(t);
+    return [point(a.x,aa.b),point(a.x,y),point(b.x,y),point(b.x,bb.t)];
+  }
+
+  ex.nodes.forEach(n=>{
+    const targets=n.type==='test'?[[n.yes,'Oui'],[n.no,'Non']]:[[n.next,'']];
+    targets.forEach(([id,branch])=>{
+      const t=nodes.get(id);
+      if(!t)throw new Error(`Missing graph target: ${n.id} -> ${id}`);
+      const a=pos.get(n.id),b=pos.get(id);
+      const returning=id===n.id||t.row<n.row||(t.row===n.row&&b.x<a.x);
+      const direct=returning?null:initialPoints(n,t);
+      const detour=returning||pointsHitNode(direct,[n.id,id]);
+      const side=a.x<400?'left':'right';
+      if(detour&&!corridorGroups[side].has(id))corridorGroups[side].set(id,t);
+      edgeList.push({key:edgeKey(n.id,branch),from:n.id,to:id,branch,returning,detour,side,points:direct});
+    });
+  });
+
+  // Earlier targets get the outer corridor; local waiting loops stay inside.
+  // Same target/same side intentionally shares one corridor.
+  const minLeft=Math.min(...[...pos.values()].map(p=>bounds(p).l));
+  const maxRight=Math.max(...[...pos.values()].map(p=>bounds(p).r));
+  const corridorX={left:new Map(),right:new Map()};
+  for(const side of ['left','right']) {
+    const sorted=[...corridorGroups[side].values()].sort((a,b)=>a.row-b.row||a.id.localeCompare(b.id));
+    sorted.forEach((n,i)=>corridorX[side].set(n.id,side==='left'?minLeft-60-(sorted.length-1-i)*24:maxRight+60+(sorted.length-1-i)*24));
+  }
+  edgeList.forEach(edge=>{
+    const n=nodes.get(edge.from),t=nodes.get(edge.to),a=pos.get(n.id),b=pos.get(t.id),aa=bounds(a),bb=bounds(b);
+    if(edge.detour) {
+      const x=corridorX[edge.side].get(t.id),y=joinY(t);
+      edge.points=[point(edge.side==='left'?aa.l:aa.r,a.y),point(x,a.y),point(x,y),point(b.x,y),point(b.x,bb.t)];
+    }
+    edge.points=edge.points.filter((p,i,all)=>i===0||!eq(p,all[i-1]));
+    if(pointsHitNode(edge.points,[n.id,t.id]))throw new Error(`Route intersects a block: ${edge.from} -> ${edge.to}`);
+    edge.d=edge.points.map((p,i)=>`${i?'L':'M'}${p.x},${p.y}`).join(' ');
+  });
+
+  const raw=[];
+  edgeList.forEach(edge=>edge.points.forEach((p,i)=>{
+    if(!i)return;
+    raw.push({a:edge.points[i-1],b:p,edge,last:i===edge.points.length-1});
+  }));
+  const merged=new Map();
+  // Split overlaps at every endpoint, then merge identical directed pieces.
+  // This removes duplicate parallel return lines and repeated arrowheads.
+  raw.forEach(seg=>{
+    const vertical=same(seg.a.x,seg.b.x),axis=vertical?'y':'x',fixed=vertical?'x':'y';
+    const lo=Math.min(seg.a[axis],seg.b[axis]),hi=Math.max(seg.a[axis],seg.b[axis]);
+    const cuts=new Set([seg.a[axis],seg.b[axis]]);
+    raw.forEach(other=>{
+      if(vertical!==same(other.a.x,other.b.x)||!same(other.a[fixed],seg.a[fixed]))return;
+      for(const q of [other.a,other.b])if(q[axis]>lo+eps&&q[axis]<hi-eps)cuts.add(q[axis]);
+    });
+    const direction=Math.sign(seg.b[axis]-seg.a[axis]);
+    const ordered=[...cuts].sort((a,b)=>direction*(a-b));
+    for(let i=1;i<ordered.length;i++){
+      const a=vertical?point(seg.a.x,ordered[i-1]):point(ordered[i-1],seg.a.y);
+      const b=vertical?point(seg.a.x,ordered[i]):point(ordered[i],seg.a.y);
+      const key=`${keyPoint(a)}>${keyPoint(b)}`;
+      let result=merged.get(key);
+      if(!result){result={a,b,d:`M${a.x},${a.y} L${b.x},${b.y}`,edges:[],targets:[],arrow:false};merged.set(key,result);}
+      if(!result.edges.includes(seg.edge.key))result.edges.push(seg.edge.key);
+      if(!result.targets.includes(seg.edge.to))result.targets.push(seg.edge.to);
+      if(seg.last&&eq(b,seg.b))result.arrow=true;
+    }
+  });
+  const segments=[...merged.values()];
+  const labels=edgeList.filter(e=>e.branch).map(edge=>{
+    const a=edge.points[0],b=edge.points[1];
+    const vertical=same(a.x,b.x);
+    return {edge:edge.key,from:edge.from,branch:edge.branch,x:vertical?a.x+28:(a.x+b.x)/2,y:vertical?(a.y+b.y)/2+5:a.y-11};
+  });
+  const contacts=new Map();
+  segments.forEach(s=>[s.a,s.b].forEach(p=>{
+    const key=keyPoint(p);let c=contacts.get(key);
+    if(!c){c={x:p.x,y:p.y,ends:[],edges:new Set(),targets:new Set()};contacts.set(key,c);}
+    c.ends.push(s);s.edges.forEach(e=>c.edges.add(e));s.targets.forEach(t=>c.targets.add(t));
+  }));
+  const junctions=[...contacts.values()].filter(c=>c.ends.length>=3&&c.targets.size===1).map(c=>({x:c.x,y:c.y,edges:[...c.edges]}));
+  const xs=edgeList.flatMap(e=>e.points.map(p=>p.x)),ys=edgeList.flatMap(e=>e.points.map(p=>p.y));
+  return {edges:edgeList,segments,labels,junctions,bounds:{left:Math.min(0,...xs)-8,right:Math.max(maxRight,...xs)+18,top:0,bottom:Math.max(...ys,...[...pos.values()].map(p=>bounds(p).b))+25}};
+}
+
+/* Integration sketch:
+ * const routes=graphSegments(engine.ex,position);
+ * Generate one <path class="edge" data-edges="key1|key2" ...> per segment.
+ * marker-end is present ONLY when segment.arrow.
+ * In render(): activeKey=engine.s.current+':'+(node.type==='test'?(s.result?'Oui':'Non'):'');
+ * A segment is active iff el.dataset.edges.split('|').includes(activeKey).
+ * Preserve that condition for the common arrow and junction dots.
+ * Generate labels from routes.labels; active label matches label.edge.
+ * Node creation and all simulation logic remain unchanged.
+ * SVG marker proposal:
+ * <marker id="arrow" viewBox="0 0 12 12" refX="11" refY="6"
+ *   markerWidth="13" markerHeight="13" markerUnits="userSpaceOnUse"
+ *   orient="auto" overflow="visible"><path d="M1 1 L11 6 L1 11Z" fill="#334155"/></marker>
+ * Set edge stroke #334155, width 2.5; active stroke #b45309, width 3.5.
+ * Use the same marker geometry for the active arrow. No dash animation is
+ * required: solid visible arrows and a pulsing active block are clearer.
+ */
+// Complete SVG connection layer. Explicit arrowhead paths avoid marker clipping,
+// ID collisions and CSS/hosting restrictions on url(#marker) references.
+function graphConnectionMarkup(routes) {
+  const htmlEscape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const transitions=edges=>htmlEscape(edges.join('|'));
+  function triangle(a,b,middle=false) {
+    const length=Math.hypot(b.x-a.x,b.y-a.y),ux=(b.x-a.x)/length,uy=(b.y-a.y)/length;
+    const tip=middle?{x:(a.x+b.x)/2,y:(a.y+b.y)/2}:{x:b.x-ux*2,y:b.y-uy*2};
+    const rear={x:tip.x-ux*12,y:tip.y-uy*12};
+    return `M${tip.x},${tip.y} L${rear.x-uy*5.5},${rear.y+ux*5.5} L${rear.x+uy*5.5},${rear.y-ux*5.5}Z`;
+  }
+  let markup=routes.segments.map(s=>`<path class="edge" data-transitions="${transitions(s.edges)}" d="${s.d}" fill="none" stroke="#334155" stroke-width="2.5"/>`).join('');
+  markup+=routes.junctions.map(j=>`<circle class="edge-junction" data-transitions="${transitions(j.edges)}" cx="${j.x}" cy="${j.y}" r="3.5" fill="#334155"/>`).join('');
+  markup+=routes.segments.flatMap(s=>{
+    const list=[];
+    if(s.arrow)list.push(`<path class="edge-arrow" data-transitions="${transitions(s.edges)}" d="${triangle(s.a,s.b)}" fill="#334155" aria-hidden="true"/>`);
+    if(s.a.x===s.b.x&&s.b.y<s.a.y-50)list.push(`<path class="edge-arrow return-arrow" data-transitions="${transitions(s.edges)}" d="${triangle(s.a,s.b,true)}" fill="#334155" aria-hidden="true"/>`);
+    return list;
+  }).join('');
+  markup+=routes.labels.map(l=>`<g class="edge-label" data-transitions="${transitions([l.edge])}"><rect x="${l.x-23}" y="${l.y-18}" width="46" height="25" rx="5" fill="#ffffff"/><text text-anchor="middle" x="${l.x}" y="${l.y}" fill="#334155" font-size="17" font-weight="750">${htmlEscape(l.branch)}</text></g>`).join('');
+  return markup;
+}
+
+function paintGraphConnections(svg,current,branch='') {
+  const activeKey=`${current}:${branch}`;
+  svg.querySelectorAll('[data-transitions]').forEach(el=>{
+    const active=el.dataset.transitions.split('|').includes(activeKey);
+    el.classList.toggle('taken',active);
+    if(el.classList.contains('edge-arrow')||el.classList.contains('edge-junction'))el.setAttribute('fill',active?'#9b6500':'#334155');
+  });
+}
+
+/* Minimal drawGraph integration:
+ * const routes=graphSegments(engine.ex,position);
+ * let svg=graphConnectionMarkup(routes);
+ * ... append existing node SVG to svg ...
+ * Use viewBox width >= routes.bounds.right+8, height >= routes.bounds.bottom.
+ * Existing graph .edge/.edge-label active loop must be replaced by:
+ * paintGraphConnections($('graph'),s.current,n?.type==='test'?(s.result?'Oui':'Non'):'');
+ * The long-return arrows point upward; each destination also gets a triangle.
+ */
+if(typeof module!=='undefined')module.exports={graphSegments,graphConnectionMarkup,paintGraphConnections};
+
+</script><script>
+const $=id=>document.getElementById(id);
+const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const exercises=EXERCISES.filter(e=>e.series===SERIES);
+let engine,playing=false,timer=null,inspected=null,scenarioIndex=-1,manualInputs=false;
+const links={1:'https://vincent-belhaire.github.io/Corrections-Logigrammes-serie-1-/',2:'https://vincent-belhaire.github.io/Corrections-Logigrammes-S-rie-n-2/'};
+const euro=n=>Number(n).toLocaleString('fr-FR',{style:'currency',currency:'EUR'});
+const hour=n=>{n=Number(n);return(n>=24?'J+'+Math.floor(n/24)+' · ':'')+String(Math.floor(n%24)).padStart(2,'0')+' h '+(n%1?'30':'00');};
+function position(n){return{x:n.lane?550:215,y:60+n.row*125,w:n.type==='start'?150:260,h:n.type==='test'?100:62};}
+function wrap(text,max=22){return text.split('\n').flatMap(p=>{let lines=[],line='';p.split(' ').forEach(w=>{if((line+' '+w).trim().length>max&&line){lines.push(line);line=w;}else line+=(line?' ':'')+w;});if(line)lines.push(line);return lines;});}
+function drawGraph(){
+ const ex=engine.ex;
+ const routes=graphSegments(ex,position);
+ const height=Math.max(135+Math.max(...ex.nodes.map(n=>n.row))*125,routes.bounds.bottom);
+ const branched=ex.nodes.some(n=>n.lane===1);
+ const left=Math.min(0,routes.bounds.left);
+ const width=Math.max(branched?770:430,routes.bounds.right+8)-left;
+ $('graph').setAttribute('viewBox',`${left} 0 ${width} ${height}`);
+ $('graph').style.minWidth=branched?'660px':'400px';
+ $('graph').style.maxWidth=branched?'900px':'510px';
+ $('graph').style.margin='auto';
+ let svg=graphConnectionMarkup(routes);
+ ex.nodes.forEach(n=>{const p=position(n),lines=wrap(n.label),shape=n.type==='test'?`<path class="shape" d="M${p.x},${p.y-p.h/2} L${p.x+p.w/2},${p.y} L${p.x},${p.y+p.h/2} L${p.x-p.w/2},${p.y} Z"/>`:`<rect class="shape" x="${p.x-p.w/2}" y="${p.y-p.h/2}" width="${p.w}" height="${p.h}" rx="${n.type==='start'?31:8}"/>`;
+  svg+=`<g class="node ${n.type}" id="node-${n.id}" role="button" tabindex="0" data-node="${n.id}" aria-label="${esc(n.label.replaceAll('\n',' '))} : lire l’explication"><title>${esc(n.explain)}</title>${shape}<text text-anchor="middle">${lines.map((line,i)=>`<tspan x="${p.x}" y="${p.y-(lines.length-1)*10+i*20+6}">${esc(line)}</tspan>`).join('')}</text></g>`;
+ });
+ $('graph').innerHTML=svg;
+ $('graph').querySelectorAll('.node').forEach(g=>{const inspect=()=>{inspected=g.dataset.node;renderExplanation();};g.addEventListener('click',inspect);g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();inspect();}});});
+}
+function load(id){
+ stop();const ex=exercises.find(e=>e.id===id)||exercises[0];engine=createEngine(ex);inspected=null;scenarioIndex=-1;manualInputs=false;
+ $('breadcrumb').textContent=`SÉRIE ${SERIES} / EXERCICE ${ex.num}`;$('title').textContent=ex.title;$('summary').textContent=ex.summary;$('concept').textContent=ex.tag;
+ document.title=`${ex.title} · LogiLab · Série ${SERIES}`;
+ $('exercises').innerHTML=exercises.map(e=>`<button class="exercise-link ${e.id===ex.id?'active':''}" data-exercise="${e.id}" ${e.id===ex.id?'aria-current="page"':''}><span class="exnum">${e.num}</span><span>${esc(e.title)}</span></button>`).join('');
+ $('exercises').querySelectorAll('button').forEach(b=>b.onclick=()=>{load(b.dataset.exercise);});
+ $('controls').innerHTML=ex.controls.map(c=>`<div class="control" id="control-${c.key}"><div class="control-head"><label class="control-label" for="input-${c.key}"><span class="sensor-light" aria-hidden="true"></span>${esc(c.label)}</label>${c.type==='bool'?`<button type="button" class="toggle" id="input-${c.key}" aria-label="${esc(c.label)}" aria-pressed="${c.value}">${c.value?'Oui':'Non'}</button>`:c.type==='range'?`<output id="value-${c.key}" for="input-${c.key}"></output>`:''}</div>${c.type==='range'?`<input id="input-${c.key}" aria-label="${esc(c.label)}" type="range" min="${c.min}" max="${c.max}" step="${c.step}" value="${c.value}">`:c.type==='select'?`<select id="input-${c.key}">${c.options.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join('')}</select>`:''}<p class="input-hint" id="hint-${c.key}" hidden></p></div>`).join('');
+ ex.controls.forEach(c=>{const el=$('input-'+c.key);if(c.type==='bool')el.onclick=()=>{engine.s.inputs[c.key]=!engine.s.inputs[c.key];scenarioIndex=-1;manualInputs=true;render();};else el.addEventListener('input',()=>{engine.s.inputs[c.key]=c.type==='range'?Number(el.value):el.value;scenarioIndex=-1;manualInputs=true;render();});});
+ $('scenarios').innerHTML=ex.scenarios.map((s,i)=>`<button data-scenario="${i}" aria-pressed="false">${esc(s[0])}</button>`).join('');
+ $('scenarios').querySelectorAll('button').forEach(b=>b.onclick=()=>scenario(Number(b.dataset.scenario)));
+ $('lesson').textContent=ex.lesson;$('note').textContent=ex.note;$('question').textContent=ex.quiz[0];$('feedback').textContent='';
+ $('answers').innerHTML=ex.quiz[1].map((a,i)=>`<button data-answer="${i}">${esc(a)}</button>`).join('');
+ $('answers').querySelectorAll('button').forEach(b=>b.onclick=()=>{const right=Number(b.dataset.answer)===ex.quiz[2];$('answers').querySelectorAll('button').forEach(x=>x.classList.remove('correct','wrong'));b.classList.add(right?'correct':'wrong');$('feedback').textContent=(right?'Bien vu. ':'Observe le logigramme. ')+ex.quiz[3];});
+ $('source').href=links[SERIES];drawGraph();render();$('graph-scroll').scrollTop=0;$('graph-scroll').scrollLeft=0;
+ try{history.replaceState(null,'','#'+ex.id);}catch{}
+}
+function scenario(index){stop();const preset=engine.ex.scenarios[index];scenarioIndex=index;manualInputs=false;engine.reset(preset[1],preset[2]);if(engine.ex.id==='garage'&&preset[1].button==='close')engine.s.memory.door=true;inspected=null;render();$('graph-scroll').scrollTop=0;}
+function stop(){playing=false;clearTimeout(timer);document.body.classList.remove('running');$('play').textContent='▶ Lecture auto';$('play').setAttribute('aria-pressed','false');}
+function advance(){inspected=null;engine.step();if(engine.s.error)stop();render();centerActive(false);}
+function schedule(){if(!playing)return;const n=engine.node(engine.s.current);const delay=n?.type==='wait'?1000:Number($('pace').value);timer=setTimeout(()=>{advance();schedule();},delay);}
+function play(){if(playing){stop();return;}playing=true;document.body.classList.add('running');$('play').textContent='Ⅱ Pause';$('play').setAttribute('aria-pressed','true');advance();schedule();}
+function centerActive(force=true){const active=$('node-'+engine.s.current);if(!active)return;const box=$('graph-scroll'),r=active.getBoundingClientRect(),b=box.getBoundingClientRect();const reduce=document.body.classList.contains('reduced-motion')||matchMedia('(prefers-reduced-motion: reduce)').matches;let top=box.scrollTop,left=box.scrollLeft;if(force||r.top<b.top+25||r.bottom>b.bottom-25)top+=r.top-b.top-b.height/2+r.height/2;if(force||r.left<b.left+15||r.right>b.right-15)left+=r.left-b.left-b.width/2+r.width/2;box.scrollTo({top,left,behavior:reduce?'auto':'smooth'});}
+function outputs(){const {s,ex}=engine,m=s.memory,n=engine.node(s.current),eff=n?.effect,rows=[];const row=(label,value,on=false,acting=false,symbol='↗')=>rows.push(`<div class="output-row ${on?'on':''} ${acting?'acting':''}"><span class="output-symbol" aria-hidden="true">${symbol}</span><span>${label}</span><span class="output-value">${esc(value)}</span></div>`);
+ switch(ex.id){
+ case 'moto':row('Sirène',m.siren?'Déclenchée':'Silencieuse',m.siren,eff==='alarm','◉');break;
+ case 'radar':row('Flash',eff==='flash'?'Éclair':'Au repos',eff==='flash',eff==='flash','✦');row('Lecture de plaque',eff==='plate'?'En cours':'En attente',eff==='plate',eff==='plate','⌗');row('Photo',eff==='photo'?'Prise de vue':m.photos+' envoyée'+(m.photos>1?'s':''),eff==='photo',eff==='photo','▣');row('Envoi',eff==='send'?'Photo envoyée':'En attente',eff==='send',eff==='send','↑');break;
+ case 'metro':row('Lecteur',eff==='verify'?'Vérification':'Au repos',eff==='verify',eff==='verify','⌗');row('Ticket',m.returned?'Rendu':'En attente',eff==='return',eff==='return','↩');row('Portique',m.door?'Ouvert':'Fermé',m.door,eff==='open'||eff==='close','↔');break;
+ case 'drink1':case 'drink2':row('Afficheur',m.price?'Prix : 1 €':'En attente',eff==='price',eff==='price','▤');row('Boissons servies',m.drinks,eff==='drink',eff==='drink','↓');row('Monnaie rendue',euro(m.change),eff==='change'||eff==='reject',eff==='change'||eff==='reject','↩');break;
+ case 'garage':row('Moteur',eff==='open'?'Ouverture':eff==='close'?'Fermeture':'Au repos',eff==='open'||eff==='close',eff==='open'||eff==='close','⟳');row('Porte',m.door?'Ouverte':'Fermée',m.door,false,'↕');break;
+ case 'coffee':row('Remplissage',eff==='addwater'?'Ajoute de l’eau':'En attente',eff==='addwater',eff==='addwater','+');row('Résistance',eff==='heat'?'Chauffe · +2 °C':'Au repos',eff==='heat',eff==='heat','≈');row('Cafés servis',m.coffees,eff==='coffee',eff==='coffee','↓');break;
+ case 'hotel':row('Serrure',m.door?'Déverrouillée':'Verrouillée',m.door,eff==='unlock'||eff==='lock','↔');row('Compte à rebours',n?.type==='wait'?m.seconds+' s restantes':'Au repos',n?.type==='wait',n?.type==='wait','◷');break;
+ case 'parking':row('Caméra',eff==='readin'||eff==='readout'?'Plaque lue':'Au repos',eff==='readin'||eff==='readout',eff==='readin'||eff==='readout','⌗');row('Barrière',m.door?'Ouverte':'Fermée',m.door,['openin','openout','closein','closeout'].includes(eff),'↗');row('Prix à payer',m.price===null?'Non calculé':euro(m.price),eff==='display',eff==='display','▤');break;
+ }
+ $('outputs').innerHTML=rows.join('');$('memory').innerHTML=ex.id==='parking'?`<div class="memory-grid"><div><span>plaque</span><b>${m.plate||'vide'}</b></div><div><span>heure_entrée</span><b>${m.arrival===null?'vide':hour(m.arrival)}</b></div><div><span>prix</span><b>${m.price===null?'vide':euro(m.price)}</b></div></div>`:'';
+}
+function renderExplanation(){const s=engine.s,n=engine.node(inspected||s.current);if(!n){$('step-kind').textContent='POUR COMMENCER';$('step-title').textContent='Avance d’un pas.';$('step-text').textContent='Le bloc actif s’éclaire en jaune. La flèche indique le chemin suivi.';$('result').innerHTML='';return;}
+ const isActual=(!inspected||inspected===s.current);$('step-kind').textContent=!isActual?'TU CONSULTES CE BLOC':n.type==='test'?'LE CAPTEUR EST INTERROGÉ':n.type==='start'?'LE PROGRAMME DÉMARRE':n.type==='wait'?'LE TEMPS S’ÉCOULE':'L’ACTION EST EXÉCUTÉE';$('step-title').textContent=n.label.replaceAll('\n',' ');$('step-text').textContent=n.explain;
+ $('result').innerHTML=isActual&&s.error?`<div class="error" role="alert">${esc(s.error)}</div>`:isActual&&n.type==='test'?`<span class="result-pill">Réponse lue : <b>${s.result?'Oui':'Non'}</b> → ${esc(engine.node(s.next).label.replaceAll('\n',' '))}</span>`:isActual&&n.type==='wait'?`<span class="result-pill">${s.memory.seconds} seconde${s.memory.seconds>1?'s':''} restante${s.memory.seconds>1?'s':''}</span>`:!isActual?'<span class="result-pill">Programme inchangé. Utilise « Revenir à l’étape en cours » pour reprendre le suivi.</span>':'';
+}
+function render(){const {s,ex}=engine,n=engine.node(s.current);
+ $('scenarios').querySelectorAll('button').forEach((b,i)=>{b.classList.toggle('selected',i===scenarioIndex);b.setAttribute('aria-pressed',String(i===scenarioIndex));});$('scenario-status').textContent=scenarioIndex>=0?'Situation choisie : '+ex.scenarios[scenarioIndex][0]:manualInputs?'Situation personnalisée':'Ou règle toi-même les capteurs.';
+ $('back').disabled=!s.history.length;$('loop-count').textContent=s.loops+' retour'+(s.loops>1?'s':'')+' en boucle';
+ ex.controls.forEach(c=>{const el=$('input-'+c.key),v=s.inputs[c.key],sensing=n?.sensor===c.key||(ex.id==='radar'&&n?.id==='fast'&&c.key==='vehicle');$('control-'+c.key).classList.toggle('sensing',sensing);if(c.type==='bool'){el.setAttribute('aria-pressed',String(v));el.textContent=v?'Oui':'Non';}else{el.value=v;if(c.type==='range')$('value-'+c.key).textContent=c.key==='hour'||c.key==='clock'?hour(v):v+' '+c.unit;}const hint=$('hint-'+c.key);hint.hidden=!sensing;hint.textContent=sensing?'Information lue à cette étape. Un changement sera lu au prochain test.':'';
+ });
+ $('graph').querySelectorAll('.node').forEach(el=>el.classList.toggle('active',el.dataset.node===s.current));
+ paintGraphConnections($('graph'),s.current,n?.type==='test'?(s.result?'Oui':'Non'):'');
+ outputs();renderExplanation();$('trace').innerHTML=s.log.map(t=>`<li>${esc(t)}</li>`).join('')||'<li>Aucune étape exécutée pour le moment.</li>';
+}
+function registerTools(){const context=document.modelContext;if(!context?.registerTool)return;try{Promise.resolve(context.registerTool({name:'configure_logigram_simulation',title:'Choisir un exercice et une situation',description:'Sélectionne un exercice de cette série et un scénario proposé. Réinitialise la simulation visible ; aucun résultat n’est enregistré.',inputSchema:{type:'object',properties:{exercise:{type:'string',enum:exercises.map(e=>e.id)},scenario:{type:'integer',minimum:0}},required:['exercise','scenario'],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:false},execute(input){const ex=exercises.find(e=>e.id===input?.exercise);if(!ex||!Number.isInteger(input.scenario)||!ex.scenarios[input.scenario])throw new Error('Exercice ou scénario invalide.');load(ex.id);scenario(input.scenario);return{exercise:ex.title,scenario:ex.scenarios[input.scenario][0],state:copy(engine.s.inputs)};}})).catch(()=>{});}catch{}}
+ $('wide').onclick=()=>{const wide=$('workspace').classList.toggle('wide');$('wide').setAttribute('aria-pressed',String(wide));$('wide').textContent=wide?'Revenir à la simulation':'Agrandir le schéma';};
+ $('play').onclick=play;$('step').onclick=()=>{stop();advance();};$('back').onclick=()=>{stop();inspected=null;engine.back();render();centerActive(false);};$('reset').onclick=()=>{stop();engine.reset();scenarioIndex=-1;manualInputs=false;inspected=null;render();$('graph-scroll').scrollTop=0;};$('pace').onchange=()=>{if(playing){clearTimeout(timer);schedule();}};$('center').onclick=()=>{inspected=null;renderExplanation();centerActive();};$('help').onclick=()=>{$('guide').showModal();};$('close-help').onclick=()=>$('guide').close();$('guide').addEventListener('click',e=>{if(e.target===$('guide')){const r=$('guide').getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)$('guide').close();}});$('motion').onchange=()=>document.body.classList.toggle('reduced-motion',$('motion').checked);
+ document.addEventListener('keydown',e=>{if(['INPUT','SELECT','TEXTAREA','BUTTON'].includes(document.activeElement?.tagName)||$('guide').open||document.activeElement?.closest('.node'))return;if(e.code==='Space'){e.preventDefault();play();}if(e.key==='ArrowRight'){e.preventDefault();stop();advance();}});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();});
+ load(location.hash.slice(1));registerTools();
+
+</script></body></html>
+
